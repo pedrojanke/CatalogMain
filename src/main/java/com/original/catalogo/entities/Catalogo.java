@@ -1,10 +1,11 @@
-import java.security.Timestamp;
+package com.original.catalogo.entities;
 import java.sql.Date;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -17,25 +18,25 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "tb_catalogo")
+@Table(name = "catalog")
 public class Catalogo{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
     @Column(nullable = false)
-    private UUID categoriaId;
+    private UUID categoryId;
     @Column(nullable = false)
-    private UUID midiaId;
+    private UUID mediaId;
     @Column(nullable = false)
-    private UUID tipoMidiaId;
+    private UUID mediaTypeId;
     @Column(nullable = false)
-    private UUID classificacaoId;
+    private UUID classificaitonId;
     @Column(nullable = false)
-    private UUID participanteId;
+    private UUID participantId;
     @Column(length = 300, nullable = false)
-    private String caminho;
+    private String mediaPath;
     @Column(nullable = false)
-    private Float valor;
+    private Float price;
     @Column(nullable = false)
     private Date dataAlteracao;
     @Column(nullable = false)
