@@ -19,20 +19,20 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "catalog")
-public class Catalogo{
+public class Catalog{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
-    @Column(nullable = false)
-    private UUID categoryId;
-    @Column(nullable = false)
-    private UUID mediaId;
-    @Column(nullable = false)
-    private UUID mediaTypeId;
-    @Column(nullable = false)
-    private UUID classificaitonId;
-    @Column(nullable = false)
-    private UUID participantId;
+    @Column(name = "id", length = 64, updatable = false)
+    private String id;
+    @Column(name = "categoryId", length = 64, updatable = true)
+    private String categoryId;
+    @Column(name = "mediaId", length = 64, updatable = true)
+    private String mediaId;
+    @Column(name = "mediaTypeId", length = 64, updatable = true)
+    private String mediaTypeId;
+    @Column(name = "classificaitonId", length = 64, updatable = true)
+    private String classificaitonId;
+    @Column(name = "participantId", length = 64, updatable = true)
+    private String participantId;
     @Column(length = 300, nullable = false)
     private String mediaPath;
     @Column(nullable = false)
