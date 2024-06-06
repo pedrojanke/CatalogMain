@@ -1,4 +1,4 @@
-package com.original.catalogo.dto;
+package com.original.catalog.dto;
 
 import java.util.Date;
 
