@@ -1,5 +1,9 @@
 package com.original.catalog.entities;
+
 import java.sql.Date;
+import java.time.LocalDate;
+
+import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,6 +22,7 @@ import lombok.Setter;
 @Table(name = "catalog")
 public class Catalog{
     @Id
+    @UuidGenerator
     @Column(name = "id", length = 64, updatable = false)
     private String id;
     @Column(name = "categoryId", length = 64, updatable = true)
@@ -35,7 +40,7 @@ public class Catalog{
     @Column(nullable = false)
     private Float price;
     @Column(nullable = false)
-    private Date dataAlteracao;
+    private LocalDate registrionDate;
     @Column(nullable = false)
-    private Date dataInativacao;
+    private Date inactivationDate;
 }
