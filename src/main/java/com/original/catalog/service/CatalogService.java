@@ -5,7 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import com.original.catalog.dto.CatalogDto;
 import com.original.catalog.entities.Catalog;
@@ -19,14 +22,38 @@ public class CatalogService {
     @Autowired
     private CatalogRepository catalogRepository;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
+    private void validateId(String url, String id) {
+        try {
+            ResponseEntity<String> response = restTemplate.getForEntity(url + id, String.class);
+            if (response.getStatusCode().isError()) {
+                throw new HttpClientErrorException(response.getStatusCode());
+            }
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new IllegalArgumentException("O ID '" + id + "' fornecido não é válido para " + url);
+        }
+    }
+
     @Transactional
     public Catalog createCatalog(CatalogDto dto) {
         try {
-            Catalog newCatalog = catalogRepository.save(new Catalog(null, dto.categoryId(), dto.mediaId(), dto.mediaTypeId(), dto.classificationId(), dto.participantId(), dto.mediaPath(), dto.price(), LocalDate.now(), dto.inactivationDate()));
+            validateId("http://localhost:8081/api/v1/category/", dto.categoryId());
+            validateId("http://localhost:8081/api/v1/media/", dto.mediaId());
+            validateId("http://localhost:8081/api/v1/mediatype/", dto.mediaTypeId());
+            validateId("http://localhost:8081/api/v1/classification/", dto.classificationId());
+            validateId("http://localhost:8081/api/v1/participant/", dto.participantId());
+
+            Catalog newCatalog = catalogRepository.save(new Catalog(null, dto.categoryId(), dto.mediaId(),
+                    dto.mediaTypeId(), dto.classificationId(), dto.participantId(), dto.mediaPath(), dto.price(),
+                    LocalDate.now(), dto.inactivationDate()));
             return newCatalog;
 
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new IllegalArgumentException("Um ou mais IDs fornecidos não são válidos.");
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("Ocorreu um erro ao criar o catálogo: " + e.getMessage());
         }
     }
 
@@ -38,7 +65,7 @@ public class CatalogService {
             throw new RuntimeException(e.getMessage());
         }
     }
-    
+
     public List<Catalog> listCatalog() {
         try {
             List<Catalog> catalog = catalogRepository.findAll();
@@ -74,7 +101,9 @@ public class CatalogService {
             if (catalog.isEmpty()) {
                 return null;
             }
-            Catalog newCatalog = catalogRepository.save(new Catalog(id, dto.categoryId(), dto.mediaId(), dto.mediaTypeId(), dto.classificationId(), dto.participantId(), dto.mediaPath(), dto.price(), LocalDate.now(), dto.inactivationDate()));
+            Catalog newCatalog = catalogRepository.save(new Catalog(id, dto.categoryId(), dto.mediaId(),
+                    dto.mediaTypeId(), dto.classificationId(), dto.participantId(), dto.mediaPath(), dto.price(),
+                    LocalDate.now(), dto.inactivationDate()));
             return newCatalog;
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
