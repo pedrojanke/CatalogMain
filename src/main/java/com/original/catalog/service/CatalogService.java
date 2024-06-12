@@ -74,7 +74,7 @@ public class CatalogService {
             if (catalog.isEmpty()) {
                 return null;
             }
-            Catalog newCatalog = catalogRepository.save(new Catalog(null, dto.categoryId(), dto.mediaId(), dto.mediaTypeId(), dto.classificationId(), dto.participantId(), dto.mediaPath(), dto.price(), LocalDate.now(), dto.inactivationDate()));
+            Catalog newCatalog = catalogRepository.save(new Catalog(id, dto.categoryId(), dto.mediaId(), dto.mediaTypeId(), dto.classificationId(), dto.participantId(), dto.mediaPath(), dto.price(), LocalDate.now(), dto.inactivationDate()));
             return newCatalog;
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
