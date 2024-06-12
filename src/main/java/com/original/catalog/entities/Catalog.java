@@ -24,33 +24,33 @@ public class Catalog {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @Column(name = "id", length = 64, updatable = false, nullable = false)
+    @Column(name = "id", length = 64, updatable = false, nullable = false, unique = true)
     private String id;
     
-    @Column(name = "categoryId", length = 64, updatable = true)
+    @Column(name = "categoryId", length = 64, updatable = true, nullable = false)
     private String categoryId;
     
-    @Column(name = "mediaId", length = 64, updatable = true)
+    @Column(name = "mediaId", length = 64, updatable = true, nullable = false)
     private String mediaId;
     
-    @Column(name = "mediaTypeId", length = 64, updatable = true)
+    @Column(name = "mediaTypeId", length = 64, updatable = true, nullable = false)
     private String mediaTypeId;
     
-    @Column(name = "classificaitonId", length = 64, updatable = true)
-    private String classificaitonId;
+    @Column(name = "classificationId", length = 64, updatable = true, nullable = false)
+    private String classificationId;
     
-    @Column(name = "participantId", length = 64, updatable = true)
+    @Column(name = "participantId", length = 64, updatable = true, nullable = false)
     private String participantId;
     
-    @Column(length = 300, nullable = true)
+    @Column(length = 300, nullable = false)
     private String mediaPath;
     
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Float price;
     
-    @Column(nullable = true)
+    @Column(nullable = false)
     private LocalDate registrationDate;
     
-    @Column(nullable = true)
+    @Column(nullable = false)
     private LocalDate inactivationDate;
 }
