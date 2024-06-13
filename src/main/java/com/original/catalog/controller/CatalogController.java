@@ -42,6 +42,12 @@ public class CatalogController {
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<List<Catalog>>("Ok", listCatalog));
     }
 
+    @GetMapping("/name")
+    public ResponseEntity<ApiResponse<List<Catalog>>> listCatalogName() {
+        List<Catalog> listCatalogName = catalogService.listCatalogName();
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<List<Catalog>>("Ok", listCatalogName));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Catalog>> findCatalog(@PathVariable String id) {
         Catalog catalog = catalogService.findCatalog(id);

@@ -1,5 +1,6 @@
 package com.original.catalog.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.original.catalog.dto.CatalogDto;
 import com.original.catalog.entities.Catalog;
 import com.original.catalog.repository.CatalogRepository;
@@ -75,6 +78,53 @@ public class CatalogService {
         }
     }
 
+    public List<Catalog> listCatalogName() {
+        try {
+            List<Catalog> catalogs = catalogRepository.findAll();
+
+            for (Catalog catalog : catalogs) {
+                catalog.setCategoryId(
+                        getNameFromEndpoint("http://localhost:8081/api/v1/category/", catalog.getCategoryId()));
+                catalog.setMediaId(getNameFromEndpoint("http://localhost:8081/api/v1/media/", catalog.getMediaId()));
+                catalog.setMediaTypeId(
+                        getNameFromEndpoint("http://localhost:8081/api/v1/mediatype/", catalog.getMediaTypeId()));
+                catalog.setClassificationId(getNameFromEndpoint("http://localhost:8081/api/v1/classification/",
+                        catalog.getClassificationId()));
+                catalog.setParticipantId(
+                        getNameFromEndpoint("http://localhost:8081/api/v1/participant/", catalog.getParticipantId()));
+            }
+
+            return catalogs;
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao listar catálogos: " + e.getMessage());
+        }
+    }
+
+    //Compara o ID e pega o nome que representa cada ID dos endpoints
+    private String getNameFromEndpoint(String baseUrl, String id) {
+        try {
+            ResponseEntity<String> response = restTemplate.getForEntity(baseUrl + id, String.class);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode root = objectMapper.readTree(response.getBody());
+                JsonNode data = root.get("data");
+                if (data != null) {
+                    JsonNode nameNode = data.get("name");
+                    if (nameNode != null) {
+                        return nameNode.asText();
+                    }
+                }
+                return "Nome não encontrado";
+            } else {
+                return "Nome não encontrado";
+            }
+        } catch (HttpClientErrorException.NotFound e) {
+            return null;
+        } catch (IOException e) {
+            return "Erro ao processar resposta";
+        }
+    }
+
     public Catalog findCatalog(String id) {
         try {
             Optional<Catalog> catalog = catalogRepository.findById(id);
@@ -101,12 +151,21 @@ public class CatalogService {
             if (catalog.isEmpty()) {
                 return null;
             }
+
+            validateId("http://localhost:8081/api/v1/category/", dto.categoryId());
+            validateId("http://localhost:8081/api/v1/media/", dto.mediaId());
+            validateId("http://localhost:8081/api/v1/mediatype/", dto.mediaTypeId());
+            validateId("http://localhost:8081/api/v1/classification/", dto.classificationId());
+            validateId("http://localhost:8081/api/v1/participant/", dto.participantId());
+
             Catalog newCatalog = catalogRepository.save(new Catalog(id, dto.categoryId(), dto.mediaId(),
                     dto.mediaTypeId(), dto.classificationId(), dto.participantId(), dto.mediaPath(), dto.price(),
                     LocalDate.now(), dto.inactivationDate()));
             return newCatalog;
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new IllegalArgumentException("Um ou mais IDs fornecidos não são válidos.");
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("Ocorreu um erro ao criar o catálogo: " + e.getMessage());
         }
     }
 
