@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.original.catalog.tests.IdWithName;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -53,4 +55,29 @@ public class Catalog {
     
     @Column(nullable = false)
     private LocalDate inactivationDate;
+
+    public void setMedia(IdWithName idWithNameFromEndpoint) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setMedia'");
+    }
+
+    public void setCategory(IdWithName idWithNameFromEndpoint) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setCategory'");
+    }
+
+    public void setMediaType(IdWithName idWithNameFromEndpoint) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setMediaType'");
+    }
+
+    public void setClassification(IdWithName idWithNameFromEndpoint) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setClassification'");
+    }
+
+    public void setParticipant(IdWithName idWithNameFromEndpoint) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setParticipant'");
+    }
 }

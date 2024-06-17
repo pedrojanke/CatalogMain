@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.original.catalog.dto.CatalogDto;
 import com.original.catalog.entities.Catalog;
 import com.original.catalog.repository.CatalogRepository;
+import com.original.catalog.tests.IdWithName;
 
 import jakarta.transaction.Transactional;
 
@@ -81,27 +82,23 @@ public class CatalogService {
     public List<Catalog> listCatalogName() {
         try {
             List<Catalog> catalogs = catalogRepository.findAll();
-
+    
             for (Catalog catalog : catalogs) {
-                catalog.setCategoryId(
-                        getNameFromEndpoint("http://localhost:8081/api/v1/category/", catalog.getCategoryId()));
-                catalog.setMediaId(getNameFromEndpoint("http://localhost:8081/api/v1/media/", catalog.getMediaId()));
-                catalog.setMediaTypeId(
-                        getNameFromEndpoint("http://localhost:8081/api/v1/mediatype/", catalog.getMediaTypeId()));
-                catalog.setClassificationId(getNameFromEndpoint("http://localhost:8081/api/v1/classification/",
-                        catalog.getClassificationId()));
-                catalog.setParticipantId(
-                        getNameFromEndpoint("http://localhost:8081/api/v1/participant/", catalog.getParticipantId()));
+                catalog.setCategory(getIdWithNameFromEndpoint("http://localhost:8081/api/v1/category/", catalog.getCategoryId()));
+                catalog.setMedia(getIdWithNameFromEndpoint("http://localhost:8081/api/v1/media/", catalog.getMediaId()));
+                catalog.setMediaType(getIdWithNameFromEndpoint("http://localhost:8081/api/v1/mediatype/", catalog.getMediaTypeId()));
+                catalog.setClassification(getIdWithNameFromEndpoint("http://localhost:8081/api/v1/classification/", catalog.getClassificationId()));
+                catalog.setParticipant(getIdWithNameFromEndpoint("http://localhost:8081/api/v1/participant/", catalog.getParticipantId()));
             }
-
+    
             return catalogs;
         } catch (Exception e) {
             throw new RuntimeException("Erro ao listar catálogos: " + e.getMessage());
         }
     }
 
-    //Compara o ID e pega o nome que representa cada ID dos endpoints
-    private String getNameFromEndpoint(String baseUrl, String id) {
+    // Compara o ID e pega o nome que representa cada ID dos endpoints
+    private IdWithName getIdWithNameFromEndpoint(String baseUrl, String id) {
         try {
             ResponseEntity<String> response = restTemplate.getForEntity(baseUrl + id, String.class);
             if (response.getStatusCode().is2xxSuccessful()) {
@@ -111,17 +108,18 @@ public class CatalogService {
                 if (data != null) {
                     JsonNode nameNode = data.get("name");
                     if (nameNode != null) {
-                        return nameNode.asText();
+                        String name = nameNode.asText();
+                        return new IdWithName(name, id);
                     }
                 }
-                return "Nome não encontrado";
+                return new IdWithName("Nome não encontrado", id);
             } else {
-                return "Nome não encontrado";
+                return new IdWithName("Nome não encontrado", id);
             }
         } catch (HttpClientErrorException.NotFound e) {
-            return null;
+            return new IdWithName("ID não encontrado", id);
         } catch (IOException e) {
-            return "Erro ao processar resposta";
+            return new IdWithName("Erro ao processar resposta", id);
         }
     }
 
