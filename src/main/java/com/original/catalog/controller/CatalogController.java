@@ -20,7 +20,7 @@ import com.original.catalog.entities.Catalog;
 import com.original.catalog.service.CatalogService;
 
 @RestController
-@RequestMapping("/catalog")
+@RequestMapping("/api/v1/catalog")
 public class CatalogController {
 
     @Autowired

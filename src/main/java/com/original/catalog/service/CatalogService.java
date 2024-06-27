@@ -39,14 +39,14 @@ public class CatalogService {
     @Transactional
     public Catalog createCatalog(CatalogDto dto) {
         try {
-            validateId("http://localhost:8081/api/v1/category/", dto.categoryId());
-            validateId("http://localhost:8081/api/v1/media/", dto.mediaId());
-            validateId("http://localhost:8081/api/v1/mediatype/", dto.mediaTypeId());
-            validateId("http://localhost:8081/api/v1/classification/", dto.classificationId());
-            validateId("http://localhost:8081/api/v1/participant/", dto.participantId());
+            validateId("http://localhost:8081/api/v1/category/", dto.category());
+            validateId("http://localhost:8081/api/v1/media/", dto.media());
+            validateId("http://localhost:8081/api/v1/mediatype/", dto.mediaType());
+            validateId("http://localhost:8081/api/v1/classification/", dto.classification());
+            validateId("http://localhost:8081/api/v1/participant/", dto.participant());
 
-            Catalog newCatalog = catalogRepository.save(new Catalog(null, dto.categoryId(), dto.mediaId(),
-                    dto.mediaTypeId(), dto.classificationId(), dto.participantId(), dto.mediaPath(), dto.price(),
+            Catalog newCatalog = catalogRepository.save(new Catalog(null, dto.category(), dto.media(),
+                    dto.mediaType(), dto.classification(), dto.participant(), dto.mediaPath(), dto.price(),
                     LocalDate.now(), dto.inactivationDate()));
             return newCatalog;
 
@@ -102,14 +102,14 @@ public class CatalogService {
                 return null;
             }
 
-            validateId("http://localhost:8081/api/v1/category/", dto.categoryId());
-            validateId("http://localhost:8081/api/v1/media/", dto.mediaId());
-            validateId("http://localhost:8081/api/v1/mediatype/", dto.mediaTypeId());
-            validateId("http://localhost:8081/api/v1/classification/", dto.classificationId());
-            validateId("http://localhost:8081/api/v1/participant/", dto.participantId());
+            validateId("http://localhost:8081/api/v1/category/", dto.category());
+            validateId("http://localhost:8081/api/v1/media/", dto.media());
+            validateId("http://localhost:8081/api/v1/mediatype/", dto.mediaType());
+            validateId("http://localhost:8081/api/v1/classification/", dto.classification());
+            validateId("http://localhost:8081/api/v1/participant/", dto.participant());
 
-            Catalog newCatalog = catalogRepository.save(new Catalog(id, dto.categoryId(), dto.mediaId(),
-                    dto.mediaTypeId(), dto.classificationId(), dto.participantId(), dto.mediaPath(), dto.price(),
+            Catalog newCatalog = catalogRepository.save(new Catalog(id, dto.category(), dto.media(),
+                    dto.mediaType(), dto.classification(), dto.participant(), dto.mediaPath(), dto.price(),
                     LocalDate.now(), dto.inactivationDate()));
             return newCatalog;
         } catch (HttpClientErrorException.NotFound e) {

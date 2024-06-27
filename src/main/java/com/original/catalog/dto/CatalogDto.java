@@ -2,5 +2,5 @@ package com.original.catalog.dto;
 
 import java.time.LocalDate;
 
-public record CatalogDto(String id, String categoryId, String mediaId, String mediaTypeId, String classificationId, String participantId, String mediaPath, Float price, LocalDate registrionDate, LocalDate inactivationDate) {
+public record CatalogDto(String id, String category, String media, String mediaType, String classification, String participant, String mediaPath, Float price, LocalDate registrionDate, LocalDate inactivationDate) {
 }
