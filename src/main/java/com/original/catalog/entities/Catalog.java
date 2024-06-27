@@ -27,19 +27,19 @@ public class Catalog {
     @Column(name = "id", length = 64, nullable = false, unique = true)
     private String id;
     
-    @Column(name = "categoryId", length = 64, nullable = false)
+    @Column(name = "category", length = 64, nullable = false)
     private String categoryId;
     
-    @Column(name = "mediaId", length = 64, nullable = false)
+    @Column(name = "media", length = 64, nullable = false)
     private String mediaId;
     
-    @Column(name = "mediaTypeId", length = 64, nullable = false)
+    @Column(name = "mediaType", length = 64, nullable = false)
     private String mediaTypeId;
     
-    @Column(name = "classificationId", length = 64, nullable = false)
+    @Column(name = "classification", length = 64, nullable = false)
     private String classificationId;
     
-    @Column(name = "participantId", length = 64, nullable = false)
+    @Column(name = "participant", length = 64, nullable = false)
     private String participantId;
     
     @Column(length = 300, nullable = false)
@@ -51,6 +51,6 @@ public class Catalog {
     @Column(nullable = false)
     private LocalDate registrationDate;
     
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate inactivationDate;
 }
