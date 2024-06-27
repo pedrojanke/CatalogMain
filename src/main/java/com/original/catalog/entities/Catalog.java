@@ -28,19 +28,19 @@ public class Catalog {
     private String id;
     
     @Column(name = "category", length = 64, nullable = false)
-    private String categoryId;
+    private String category;
     
     @Column(name = "media", length = 64, nullable = false)
-    private String mediaId;
+    private String media;
     
     @Column(name = "mediaType", length = 64, nullable = false)
-    private String mediaTypeId;
+    private String mediaType;
     
     @Column(name = "classification", length = 64, nullable = false)
-    private String classificationId;
+    private String classification;
     
     @Column(name = "participant", length = 64, nullable = false)
-    private String participantId;
+    private String participant;
     
     @Column(length = 300, nullable = false)
     private String mediaPath;
