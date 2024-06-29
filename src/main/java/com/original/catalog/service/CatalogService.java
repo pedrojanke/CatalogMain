@@ -4,13 +4,16 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import com.original.catalog.entities.ApiResponse;
 
-import com.original.catalog.dto.CatalogDto;
+import com.original.catalog.dto.*;
 import com.original.catalog.entities.Catalog;
 import com.original.catalog.repository.CatalogRepository;
 
@@ -33,6 +36,71 @@ public class CatalogService {
             }
         } catch (HttpClientErrorException.NotFound e) {
             throw new IllegalArgumentException("O ID '" + id + "' fornecido não é válido para " + url);
+        }
+    }
+
+    public CategoryDto findCategoryById(String id) {
+        try {
+            ResponseEntity<ApiResponse<CategoryDto>> response = restTemplate.exchange(
+                    "http://localhost:8081/api/v1/category/" + id,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<ApiResponse<CategoryDto>>() {});
+            return response.getBody().getData();
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new IllegalArgumentException("O ID '" + id + "' fornecido não é válido para categoria");
+        }
+    }
+
+    private MediaDto findMediaById(String id) {
+        try {
+            ResponseEntity<ApiResponse<MediaDto>> response = restTemplate.exchange(
+                    "http://localhost:8081/api/v1/media/" + id,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<ApiResponse<MediaDto>>() {});
+            return response.getBody().getData();
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new IllegalArgumentException("O ID '" + id + "' fornecido não é válido para mídia");
+        }
+    }
+
+    private MediaTypeDto findMediaTypeById(String id) {
+        try {
+            ResponseEntity<ApiResponse<MediaTypeDto>> response = restTemplate.exchange(
+                    "http://localhost:8081/api/v1/mediatype/" + id,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<ApiResponse<MediaTypeDto>>() {});
+            return response.getBody().getData();
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new IllegalArgumentException("O ID '" + id + "' fornecido não é válido para tipo de mídia");
+        }
+    }
+
+    private ClassificationDto findClassificationById(String id) {
+        try {
+            ResponseEntity<ApiResponse<ClassificationDto>> response = restTemplate.exchange(
+                    "http://localhost:8081/api/v1/classification/" + id,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<ApiResponse<ClassificationDto>>() {});
+            return response.getBody().getData();
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new IllegalArgumentException("O ID '" + id + "' fornecido não é válido para classificação");
+        }
+    }
+
+    private ParticipantDto findParticipantById(String id) {
+        try {
+            ResponseEntity<ApiResponse<ParticipantDto>> response = restTemplate.exchange(
+                    "http://localhost:8081/api/v1/participant/" + id,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<ApiResponse<ParticipantDto>>() {});
+            return response.getBody().getData();
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new IllegalArgumentException("O ID '" + id + "' fornecido não é válido para participante");
         }
     }
 
@@ -82,6 +150,47 @@ public class CatalogService {
                 return null;
             }
             return catalog.get();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public CatalogResponseDto findCatalogDetailsById(String id) {
+        try {
+            Optional<Catalog> catalog = catalogRepository.findById(id);
+            if (catalog.isEmpty()) {
+                return null;
+            }
+
+            Catalog catalogItem = catalog.get();
+
+            String catalogId = catalogItem.getId();
+            String categoryId = catalogItem.getCategory();
+            String mediaId = catalogItem.getMedia();
+            String mediaTypeId = catalogItem.getMediaType();
+            String classificationId = catalogItem.getClassification();
+            String participantId = catalogItem.getParticipant();
+
+            CategoryDto category = this.findCategoryById(categoryId);
+            MediaDto media = this.findMediaById(mediaId);
+            MediaTypeDto mediaType = this.findMediaTypeById(mediaTypeId);
+            ClassificationDto classification = this.findClassificationById(classificationId);
+            ParticipantDto participant = this.findParticipantById(participantId);
+
+            CatalogResponseDto catalogResponse = new CatalogResponseDto(
+                catalogId,
+                category,
+                media,
+                mediaType,
+                classification,
+                participant,
+                catalogItem.getMediaPath(),
+                catalogItem.getPrice(),
+                catalogItem.getRegistrationDate(),
+                catalogItem.getInactivationDate()
+            );
+
+            return catalogResponse;
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

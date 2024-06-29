@@ -1,4 +1,4 @@
-package com.original.catalog.controller;
+package com.original.catalog.entities;
 
 import java.io.Serializable;
 

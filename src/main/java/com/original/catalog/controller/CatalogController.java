@@ -3,6 +3,7 @@ package com.original.catalog.controller;
 import java.util.List;
 import java.util.Optional;
 
+import com.original.catalog.entities.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.original.catalog.dto.CatalogDto;
+import com.original.catalog.dto.*;
 import com.original.catalog.entities.Catalog;
 import com.original.catalog.service.CatalogService;
 
@@ -43,12 +44,12 @@ public class CatalogController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Catalog>> findCatalog(@PathVariable String id) {
-        Catalog catalog = catalogService.findCatalog(id);
+    public ResponseEntity<ApiResponse<CatalogResponseDto>> findCatalog(@PathVariable String id) {
+        CatalogResponseDto catalog = catalogService.findCatalogDetailsById(id);
         if (catalog == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<Catalog>("Ok", catalog));
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<CatalogResponseDto>("Ok", catalog));
     }
 
     @DeleteMapping("/{id}")
