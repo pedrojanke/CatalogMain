@@ -1,11 +1,15 @@
 package com.original.catalog.service;
 
+import java.net.http.HttpHeaders;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.http.MediaType;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,9 +17,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import com.original.catalog.entities.ApiResponse;
 
+
 import com.original.catalog.dto.*;
 import com.original.catalog.entities.Catalog;
 import com.original.catalog.repository.CatalogRepository;
+import com.original.catalog.client.*;
 
 import jakarta.transaction.Transactional;
 
@@ -170,12 +176,18 @@ public class CatalogService {
             String mediaTypeId = catalogItem.getMediaType();
             String classificationId = catalogItem.getClassification();
             String participantId = catalogItem.getParticipant();
+            Float priceValue = catalogItem.getPrice();
 
             CategoryDto category = this.findCategoryById(categoryId);
             MediaDto media = this.findMediaById(mediaId);
             MediaTypeDto mediaType = this.findMediaTypeById(mediaTypeId);
             ClassificationDto classification = this.findClassificationById(classificationId);
             ParticipantDto participant = this.findParticipantById(participantId);
+
+            SoapNumberToWordClient priceToWords = new SoapNumberToWordClient();
+            String priceInWords = priceToWords.execute(priceValue);
+
+            PriceDto price = new PriceDto(priceValue, priceInWords);
 
             CatalogResponseDto catalogResponse = new CatalogResponseDto(
                 catalogId,
@@ -185,7 +197,7 @@ public class CatalogService {
                 classification,
                 participant,
                 catalogItem.getMediaPath(),
-                catalogItem.getPrice(),
+                price,
                 catalogItem.getRegistrationDate(),
                 catalogItem.getInactivationDate()
             );
