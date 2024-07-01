@@ -10,7 +10,7 @@ public class CatalogResponseDto {
     public ClassificationDto classification;
     public ParticipantDto participant;
     public String mediaPath;
-    public Float price;
+    public PriceDto price;
     public LocalDate registrationDate;
     public LocalDate inactivationDate;
 
@@ -22,7 +22,7 @@ public class CatalogResponseDto {
         ClassificationDto classification,
         ParticipantDto participant,
         String mediaPath,
-        Float price,
+        PriceDto price,
         LocalDate registrationDate,
         LocalDate inactivationDate
     ) {
